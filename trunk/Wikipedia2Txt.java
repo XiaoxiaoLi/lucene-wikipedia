@@ -101,6 +101,7 @@ public class Wikipedia2Txt {
 	//				}
 	//    	        BufferedWriter bufferWritter = new BufferedWriter(fileWritter);
 	    	        try {
+	    	        	bufferWritter.newLine();
 						bufferWritter.write(page.getTitle()+"-XIAO-");
 						//bufferWritter.newLine();
 					} catch (IOException e1) {
@@ -113,8 +114,18 @@ public class Wikipedia2Txt {
 										replaceAll("\\{\\{[A-Za-z0-9+\\s-]+\\}\\}"," ").
 										replaceAll("(?m)<ref>.+</ref>"," ").
 										replaceAll("(?m)<ref name=\"[A-Za-z0-9\\s-]+\">.+</ref>"," ").
+										replaceAll("<ref>"," <ref>").
+										replaceAll("- "," ").
+										replaceAll("-"," ").
+										replaceAll("'' "," ").
+										replaceAll("\\'"," ").
+										replaceAll("\""," ").
+										replaceAll(" ''"," ").
+										replaceAll("�e","e").
+										replaceAll("--"," ").
 										replaceAll("[0-9].*? "," ").
-										replaceAll("<ref>"," <ref>");
+										replaceAll(" -+ "," ").
+										replaceAll(" +"," ");
 	
 					// Remove text inside {{ }}
 					String plainStr = wikiModel.render(new PlainTextConverter(), wikiText).
@@ -127,6 +138,14 @@ public class Wikipedia2Txt {
 						String sentence = regexMatcher.group();
 	
 						if (matchSpaces(sentence, 5)) {
+							//further process it
+//							  //Remove some punctuation
+							sentence =  sentence.replaceAll("[;:%\\(\\)\\[\\]\\{\\}\\<\\>_\\.,-]"," "); 
+						   //Remove trailing space
+							sentence = sentence.replaceAll(" +"," ");
+							  //Remove leading space
+							sentence =  sentence.replaceAll("^ +","");
+
 							try {
 								bufferWritter.write(sentence);
 								//bufferWritter.newLine();#write a sentence in a new line
