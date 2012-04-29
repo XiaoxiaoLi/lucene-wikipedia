@@ -31,21 +31,21 @@ public class Wikipedia2Txt {
 				
 		String dumpfile = "E:\\thesis\\enwiki-20120403-pages-articles-multistream.xml\\first14711lines.xml";
 		File file = null;
-		try {
-			
-			file = new File("E:\\thesis\\enwiki-20120403-pages-articles-multistream.xml\\titleAndPureText.txt");
-			if (!file.exists()){
-				file.delete();
-				file.createNewFile();
-			}
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			
+//			file = new File("E:\\thesis\\enwiki-20120403-pages-articles-multistream.xml\\titleAndPureText.txt");
+//			if (!file.exists()){
+//				file.delete();
+//				file.createNewFile();
+//			}
+//		} catch (FileNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		
 		FileWriter fileWritter = null;
 		try {
-			fileWritter = new FileWriter(file.getName(),false);
+			fileWritter = new FileWriter("E:\\thesis\\enwiki-20120403-pages-articles-multistream.xml\\titleAndPureText.txt",false);
 		} catch (IOException e2) {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
@@ -79,72 +79,64 @@ public class Wikipedia2Txt {
 		public void process(WikiArticle page, Siteinfo siteinfo) throws SAXException {
 
 			if (page != null && page.getText() != null && !page.getText().startsWith("#REDIRECT ")){
-//				File file = null;
-//				try {
-//					file = new File("output.txt");
-//					if (!file.exists()){
-//						file.delete();
-//						file.createNewFile();
-//					}
-//				} catch (FileNotFoundException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				} catch (IOException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
+				String title = page.getTitle();
+				Pattern p = Pattern.compile("(disambiguation)||List of ||Table of ");
+				Matcher m = p.matcher(title);
+				
+				if (!m.matches()){//don't want the pages that has pattern p in the title
 
-				// Zap headings ==some text== or ===some text===
-
-				// <ref>{{Cite web|url=http://tmh.floonet.net/articles/falseprinciple.html |title="The False Principle of our Education" by Max Stirner |publisher=Tmh.floonet.net |date= |accessdate=2010-09-20}}</ref>
-				// <ref>Christopher Gray, ''Leaving the Twentieth Century'', p. 88.</ref>
-				// <ref>Sochen, June. 1972. ''The New Woman: Feminism in Greenwich Village 1910锟�20.'' New York: Quadrangle.</ref>
-
-				// String refexp = "[A-Za-z0-9+\\s\\{\\}:_=''|\\.\\w#\"\\(\\)\\[\\]/,?&%锟絔+";
-//				FileWriter fileWritter = null;
-//				try {
-//					fileWritter = new FileWriter(file.getName(),false);
-//				} catch (IOException e2) {
-//					// TODO Auto-generated catch block
-//					e2.printStackTrace();
-//				}
-//    	        BufferedWriter bufferWritter = new BufferedWriter(fileWritter);
-    	        try {
-					bufferWritter.write("<title>"+page.getTitle()+"</title>");
-					bufferWritter.newLine();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-    	        
-				String wikiText = page.getText().
-									replaceAll("[=]+[A-Za-z+\\s-]+[=]+", " ").
-									replaceAll("\\{\\{[A-Za-z0-9+\\s-]+\\}\\}"," ").
-									replaceAll("(?m)<ref>.+</ref>"," ").
-									replaceAll("(?m)<ref name=\"[A-Za-z0-9\\s-]+\">.+</ref>"," ").
-									replaceAll("<ref>"," <ref>");
-
-				// Remove text inside {{ }}
-				String plainStr = wikiModel.render(new PlainTextConverter(), wikiText).
-					replaceAll("\\{\\{[A-Za-z+\\s-]+\\}\\}"," ");
-
-				Matcher regexMatcher = regex.matcher(plainStr);
-				while (regexMatcher.find())
-				{
-					// Get sentences with 6 or more words
-					String sentence = regexMatcher.group();
-
-					if (matchSpaces(sentence, 5)) {
-						try {
-							bufferWritter.write(sentence);
-							bufferWritter.newLine();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+					// Zap headings ==some text== or ===some text===
+	
+					// <ref>{{Cite web|url=http://tmh.floonet.net/articles/falseprinciple.html |title="The False Principle of our Education" by Max Stirner |publisher=Tmh.floonet.net |date= |accessdate=2010-09-20}}</ref>
+					// <ref>Christopher Gray, ''Leaving the Twentieth Century'', p. 88.</ref>
+					// <ref>Sochen, June. 1972. ''The New Woman: Feminism in Greenwich Village 1910锟�20.'' New York: Quadrangle.</ref>
+	
+					// String refexp = "[A-Za-z0-9+\\s\\{\\}:_=''|\\.\\w#\"\\(\\)\\[\\]/,?&%锟絔+";
+	//				FileWriter fileWritter = null;
+	//				try {
+	//					fileWritter = new FileWriter(file.getName(),false);
+	//				} catch (IOException e2) {
+	//					// TODO Auto-generated catch block
+	//					e2.printStackTrace();
+	//				}
+	//    	        BufferedWriter bufferWritter = new BufferedWriter(fileWritter);
+	    	        try {
+						bufferWritter.write(page.getTitle()+"-XIAO-");
+						//bufferWritter.newLine();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+	    	        
+					String wikiText = page.getText().
+										replaceAll("[=]+[A-Za-z+\\s-]+[=]+", " ").
+										replaceAll("\\{\\{[A-Za-z0-9+\\s-]+\\}\\}"," ").
+										replaceAll("(?m)<ref>.+</ref>"," ").
+										replaceAll("(?m)<ref name=\"[A-Za-z0-9\\s-]+\">.+</ref>"," ").
+										replaceAll("[0-9].*? "," ").
+										replaceAll("<ref>"," <ref>");
+	
+					// Remove text inside {{ }}
+					String plainStr = wikiModel.render(new PlainTextConverter(), wikiText).
+						replaceAll("\\{\\{[A-Za-z+\\s-]+\\}\\}"," ");
+	
+					Matcher regexMatcher = regex.matcher(plainStr);
+					while (regexMatcher.find())
+					{
+						// Get sentences with 6 or more words
+						String sentence = regexMatcher.group();
+	
+						if (matchSpaces(sentence, 5)) {
+							try {
+								bufferWritter.write(sentence);
+								//bufferWritter.newLine();#write a sentence in a new line
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 						}
 					}
 				}
-
 			}
 		}
 
