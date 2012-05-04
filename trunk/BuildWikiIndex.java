@@ -16,14 +16,16 @@ import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.Hashtable;
 
 public class BuildWikiIndex {
   public static void main(String[] args) throws IOException, ParseException {
-	  buildIndex();
+	  buildIndex("testIndex","data\\first14711lines-title-and-categories.xml");
   }
   
 //Deletes all files and subdirectories under dir.
@@ -43,9 +45,9 @@ public class BuildWikiIndex {
 	   // The directory is now empty so delete it
 	   return dir.delete();
 	}
-  
-  public static void buildIndex() throws IOException {
-	  	String indexDir = "testIndex";
+	
+  public static void buildIndex(String indexName, String inputFile) throws IOException {
+	    String indexDir = indexName;
 		File file = null;
 		file = new File(indexDir);
 		if (file.exists()){
@@ -59,21 +61,27 @@ public class BuildWikiIndex {
 	    IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_36, analyzer);
 
 	    IndexWriter indexWriter = new IndexWriter(dir, config);
-	    String[] docs = new String[] {  "title1, cat1_cat2, hello world",
-	                                     "title2, cat2, hello sailor",
-	                                     "title3, cat3, goodnight moon"};
-	    String[] items = null;
-	    for (String entry : docs) {
-	        Document doc = new Document();
-	        
-	        items = entry.split(", ");
-	        doc.add(new Field("title",items[0],
-                    Field.Store.YES,Field.Index.ANALYZED));
-	        doc.add(new Field("category",items[1],
-                    Field.Store.YES,Field.Index.ANALYZED));
-	        doc.add(new Field("text",items[2],
+	  
+	  
+	  try {
+	        BufferedReader in = new BufferedReader(new FileReader(inputFile));
+	        String str;
+	        String[] items = null;
+	        while ((str = in.readLine()) != null) {
+	            //process each line
+	            Document doc = new Document();
+		        
+		        items = str.split("-XIAO-");
+		        doc.add(new Field("title",items[0],
 	                    Field.Store.YES,Field.Index.ANALYZED));
-	        indexWriter.addDocument(doc);
+		        doc.add(new Field("category",items[1],
+	                    Field.Store.YES,Field.Index.ANALYZED));
+		        doc.add(new Field("text",items[2],
+		                    Field.Store.YES,Field.Index.ANALYZED));
+		        indexWriter.addDocument(doc);
+	        }
+	        in.close();
+	    } catch (IOException e) {
 	    }
 	    indexWriter.close();
   }
