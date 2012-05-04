@@ -34,7 +34,7 @@ while(defined($page = $pages->next)) {
     	if (defined $page->categories){#如果有categories信息,redirect先不管，因为存text反倒要耗内存
     		my $cs = $page->categories;    		
     		foreach my $c (@$cs){
-    			$c=~s/ /_/;
+    			$c=~s/ /_/g;
     			$c=~s/|.*//;#竖线右边的都删掉，不是*就是链接，不是这的category
     			if ($c!~/[0-9]/){#不要里面带数字的
     				$categoryInfo.=$c." ";#我们打印的时候的分割符
