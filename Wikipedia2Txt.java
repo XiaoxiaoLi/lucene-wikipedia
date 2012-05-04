@@ -139,7 +139,7 @@ public class Wikipedia2Txt {
 	
 						if (matchSpaces(sentence, 5)) {
 							//further process it
-//							  //Remove some punctuation
+							 //Remove some punctuation
 							sentence =  sentence.replaceAll("[;:%\\(\\)\\[\\]\\{\\}\\<\\>_\\.,-]"," "); 
 						   //Remove trailing space
 							sentence = sentence.replaceAll(" +"," ");
