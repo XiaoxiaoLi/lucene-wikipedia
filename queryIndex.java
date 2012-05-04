@@ -23,9 +23,9 @@ import java.util.Hashtable;
 public class queryIndex {
 	 //main
 	  public static void main(String[] args) throws IOException, ParseException {
-		  String toSearch = "category";
-		  String[] otherfieldsToSearch = {"title"};
-		  searchIndex(toSearch, "cat2", otherfieldsToSearch);
+		  String toSearch = "title";
+		  String[] otherfieldsToSearch = {"category"};
+		  searchIndex(toSearch, "Anarchism", otherfieldsToSearch);
 	  }
 	  
 	  //method to search in the index
