@@ -15,8 +15,11 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
+
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.Hashtable;
 
@@ -24,15 +27,25 @@ public class queryIndex {
 	 //main
 	  public static void main(String[] args) throws IOException, ParseException {
 		  String toSearch = "title";
-		  String[] otherfieldsToSearch = {"category"};
-		  searchIndex(toSearch, "Anarchism", otherfieldsToSearch);
+		  String[] otherfieldsToDisplay = {"category"};
+		  
+		  //do multiple searches for each line in a file
+		  try {
+			    BufferedReader in = new BufferedReader(new FileReader("data\\titles.txt"));
+			    String str;
+			    while ((str = in.readLine()) != null) {
+			    	searchIndex(toSearch, str, otherfieldsToDisplay);
+			    }
+			    in.close();
+			} catch (IOException e) {
+			}
 	  }
 	  
 	  //method to search in the index
 	  public static void searchIndex(String searchField, String queryString, String[] otherFields) throws IOException, ParseException{	  
 		  IndexSearcher searcher = new IndexSearcher(IndexReader.open(FSDirectory.open(new File("testIndex"))));
 		  QueryParser parser = new QueryParser(Version.LUCENE_36, searchField, new StandardAnalyzer(Version.LUCENE_36));
-		  System.out.println("\nsearching for: " + queryString);
+		  System.out.println("\nsearching for - " + queryString + " -in field " + searchField);
 		  Query query = parser.parse(queryString);
 		  TopDocs results = searcher.search(query,10);
 		  System.out.println("total hits: " + results.totalHits);
