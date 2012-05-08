@@ -1,34 +1,26 @@
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.search.TopScoreDocCollector;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Hashtable;
 
 public class queryIndex {
 	 //main
 	  public static void main(String[] args) throws IOException, ParseException {
 		  String toSearch = "title";
 		  String[] otherfieldsToDisplay = {"category"};
-		  
+		 
 		  //do multiple searches for each line in a file
 		  try {
 			    BufferedReader in = new BufferedReader(new FileReader("data\\titles.txt"));
@@ -38,12 +30,13 @@ public class queryIndex {
 			    }
 			    in.close();
 			} catch (IOException e) {
+				System.out.println("error in reading input file\n");
 			}
 	  }
 	  
 	  //method to search in the index
 	  public static void searchIndex(String searchField, String queryString, String[] otherFields) throws IOException, ParseException{	  
-		  IndexSearcher searcher = new IndexSearcher(IndexReader.open(FSDirectory.open(new File("testIndex"))));
+		  IndexSearcher searcher = new IndexSearcher(IndexReader.open(FSDirectory.open(new File("I:\\xiao-wikipedia\\lucene-index\\testIndex"))));
 		  QueryParser parser = new QueryParser(Version.LUCENE_36, searchField, new StandardAnalyzer(Version.LUCENE_36));
 		  System.out.println("\nsearching for - " + queryString + " -in field " + searchField);
 		  Query query = parser.parse(queryString);
