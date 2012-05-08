@@ -50,6 +50,7 @@ public class BuildWikiIndex {
 	    String indexDir = indexName;
 		File file = null;
 		file = new File(indexDir);
+		int counter = 0;
 		if (file.exists()){
 			deleteDir(file);
 		}
@@ -69,6 +70,10 @@ public class BuildWikiIndex {
 	        String[] items = null;
 	        while ((str = in.readLine()) != null) {
 	            //process each line
+	        	//print how we do in the console
+//	        	if (counter % 1==0){
+//	        		System.out.println ("done with " + counter +" docs");
+//	        	}
 	            Document doc = new Document();
 		        
 		        items = str.split("-XIAO-");
@@ -79,6 +84,7 @@ public class BuildWikiIndex {
 		        doc.add(new Field("text",items[2],
 		                    Field.Store.YES,Field.Index.ANALYZED));
 		        indexWriter.addDocument(doc);
+		        counter+=1;
 	        }
 	        in.close();
 	    } catch (IOException e) {
